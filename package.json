@@ -1,0 +1,17 @@
+{
+  "name": "selenium-tests",
+  "version": "1.0.0",
+  "description": "Selenium headless tests for Shop-Sphere",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests/selenium-tests.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chromedriver": "^137.0.3",
+    "selenium-webdriver": "^4.33.0",
+    "wait-on": "^8.0.3"
+  }
+}
