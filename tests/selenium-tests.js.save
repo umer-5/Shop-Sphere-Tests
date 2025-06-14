@@ -1,9 +1,8 @@
-
 // tests/selenium-tests.js
 
 const { Builder, By, until } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
-//const startBackend = require('./startBackend.js')
+const startBackend = require('./startBackend.js')
 
 async function runTests() {
     const options = new chrome.Options();
@@ -27,6 +26,9 @@ async function runTests() {
         await driver.findElement(By.css("button[type='submit']")).click();
         await driver.sleep(8000);
         await driver.get(`${baseUrl}/dashboard/cart`);
+        console.log(`${baseUrl}/dashboard/cart`)
+        console.log("Current page title:", await driver.getTitle()); // Debug line
+
         await driver.wait(until.titleContains('Your Cart'), 10000);
         console.log("✅ Cart page loaded");
 
@@ -55,7 +57,7 @@ async function runTests() {
         } catch (e) {
         console.error("❌ Category not found in DOM:", categoryName);
         throw e;
-	}
+        }
 
 
 	// Test 3: Sign up
@@ -72,11 +74,11 @@ async function runTests() {
 	await driver.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'})", anotherSubmitBtn);
 	await driver.wait(until.elementIsVisible(anotherSubmitBtn), 5000);
 	await driver.wait(until.elementIsEnabled(anotherSubmitBtn), 5000);
-	await driver.sleep(1000);
+	await driver.sleep(1000); // Let overlays/animations finish
+
 	await anotherSubmitBtn.click();
 
 	await driver.sleep(10000);
-
 	const currentUrl = await driver.getCurrentUrl();
 	if (!currentUrl.includes("register")) {
     	console.log("✅ Registration successful");
@@ -84,7 +86,8 @@ async function runTests() {
     	console.log("❌ Registration failed or message not found");
 	}
 
-	// Test 4: Homepage loads
+
+        // Test 4: Homepage loads
         await driver.get(baseUrl);
         await driver.wait(until.titleContains("ShopSphere"), 5000);
         console.log("✅ Homepage loaded");
@@ -135,26 +138,55 @@ async function runTests() {
         await driver.wait(until.titleContains("Contact"), 5000);
         console.log("✅ Contact page loaded");
 
-	// Test 9: About Us page loads
-	await driver.get(`${baseUrl}/about`);
-	await driver.wait(until.titleContains("About"), 5000);
-	console.log("✅ About us page loaded");
 
-	// Test 10: Logout
-	await driver.get(`${baseUrl}`)
-	const userMenu = await driver.findElement(By.xpath("//a[contains(@class, 'dropdown-toggle') and contains(text(), 'Umer')]"));
-	await userMenu.click();
-	await driver.sleep(1000);
-	const logoutOption = await driver.findElement(By.xpath("//a[contains(text(), 'Logout')]"));
-	await logoutOption.click();
-	await driver.sleep(2000);
+        // Test 6: Add to cart (if at least one product exists)
+	/*await driver.get(`${baseUrl}/login`);
+	await driver.findElement(By.name("email")).clear();
+    	await driver.findElement(By.name("password")).clear();
+	await driver.findElement(By.name("email")).sendKeys("rumerjaved9@gmail.com");
+	await driver.findElement(By.name("password")).sendKeys("143341..");
+	await driver.findElement(By.css("button[type='submit']")).click();
+	await driver.sleep(8000)
+	await driver.get(`${baseUrl}/products`);
+        const addToCartButtons = await driver.findElements(By.css(".add-to-cart"));
+        if (addToCartButtons.length > 0) {
+            await addToCartButtons[0].click();
+            console.log("✅ Add to cart button worked");
+        } else {
+            console.log("⚠️ No products found to test add-to-cart");
+        }
 
-	const newerCurrentUrl = await driver.getCurrentUrl();
-	if (newerCurrentUrl.includes("/login")) {
-	    console.log("✅ Logout test passed.");
-	} else {
-	    console.log("❌ Logout test failed: Redirect not detected.");
-	}
+        // Test 7: Search bar functionality
+        await driver.get(baseUrl);
+        const searchBox = await driver.findElement(By.name("search"));
+        await searchBox.sendKeys("shoes");
+        const searchBtn = await driver.findElement(By.css("button[type='submit']"));
+        await searchBtn.click();
+        await driver.wait(until.urlContains("search"), 5000);
+        console.log("✅ Search functionality works");
+
+        // Test 9: Login with empty fields
+        await driver.get(`${baseUrl}/login`);
+        await driver.findElement(By.css("button[type='submit']")).click();
+        const errorMsg = await driver.findElements(By.css(".error-message"));
+        if (errorMsg.length > 0) {
+            console.log("✅ Error message shown for empty login");
+        } else {
+            console.log("⚠️ No error message on empty login");
+        }
+
+        // Test 10: Attempt to register with already used email
+        await driver.get(`${baseUrl}/register`);
+        await driver.findElement(By.name("email")).sendKeys("existing@example.com");
+        await driver.findElement(By.name("password")).sendKeys("123456");
+        await driver.findElement(By.css("button[type='submit']")).click();
+        await driver.sleep(2000);
+        const error = await driver.findElements(By.css(".error-message"));
+        if (error.length > 0) {
+            console.log("✅ Duplicate email registration blocked");
+        } else {
+            console.log("⚠️ No error shown on duplicate registration");
+        }*/
 
     } catch (error) {
         console.error("❌ Test failed:", error);

@@ -1,33 +1,36 @@
-# Dockerfile for Selenium Tests
+# Dockerfile
 
-FROM node:20
+FROM node:20-slim
 
-# Install dependencies for Chrome
+# Install dependencies and Chrome
 RUN apt-get update && apt-get install -y \
-    wget curl gnupg unzip \
-    && wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
-    && apt install -y ./google-chrome-stable_current_amd64.deb \
-    && rm google-chrome-stable_current_amd64.deb
+    wget \
+    curl \
+    gnupg \
+    ca-certificates \
+    fonts-liberation \
+    libappindicator3-1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libnspr4 \
+    libnss3 \
+    libxss1 \
+    xdg-utils \
+    libu2f-udev \
+    --no-install-recommends && \
+    wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    apt-get install -y ./google-chrome-stable_current_amd64.deb && \
+    rm google-chrome-stable_current_amd64.deb
 
-# Install ChromeDriver
-RUN CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+') && \
-    DRIVER_VERSION=$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}) && \
-    wget -N https://chromedriver.storage.googleapis.com/$DRIVER_VERSION/chromedriver_linux64.zip && \
-    unzip chromedriver_linux64.zip && \
-    mv chromedriver /usr/bin/chromedriver && \
-    chmod +x /usr/bin/chromedriver && \
-    rm chromedriver_linux64.zip
-
-# Set working directory
+# Create app directory
 WORKDIR /app
 
-# Copy and install dependencies
-COPY package*.json ./
-RUN npm install
-
-# Copy test code
+# Copy test project files
 COPY . .
 
-# Default command
-CMD ["node", "tests/selenium-tests.js"]
+# Install dependencies
+RUN npm install
+
+# Default command to run tests
+CMD ["npm", "test"]
 
