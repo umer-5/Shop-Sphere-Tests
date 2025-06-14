@@ -16,7 +16,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build(env.TEST_IMAGE, '-f Dockerfile .')
+                    docker.build(env.TEST_IMAGE, '.')
                 }
             }
         }
@@ -24,10 +24,10 @@ pipeline {
         stage('Run Selenium Tests') {
             steps {
                 script {
-                    docker.image(env.TEST_IMAGE).inside('--name ' + env.CONTAINER_NAME) {
-                        sh 'npm install'
-                        sh 'node tests/selenium-tests.js'
-                    }
+                    sh """
+                    docker run --rm --name ${env.CONTAINER_NAME} \
+                      ${env.TEST_IMAGE}
+                    """
                 }
             }
         }
