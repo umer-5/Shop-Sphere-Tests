@@ -16,7 +16,7 @@ async function runTests() {
     let driver = await new Builder().forBrowser('chrome').setChromeOptions(options).build();
 
     try {
-        const baseUrl = 'http://16.171.24.108:5000'; // replace with actual address
+        const baseUrl = 'http://16.171.24.108:5100'; // replace with actual address
 
 	// Test 1: Navigate to cart
         await driver.get(`${baseUrl}/login`);
