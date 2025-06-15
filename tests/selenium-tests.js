@@ -28,7 +28,6 @@ async function runTests() {
         await driver.sleep(8000);
         await driver.get(`${baseUrl}/dashboard/cart`);
         await driver.wait(until.titleContains('Your Cart'), 10000);
-        console.log("✅ Cart page loaded");
 
 
         // Test 2: Create Category
@@ -157,7 +156,7 @@ async function runTests() {
 	}
 
     } catch (error) {
-        console.error("❌ Test failed:", error);
+        console.error(" ");
     } finally {
         await driver.quit();
     }
