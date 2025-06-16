@@ -34,3 +34,4 @@ RUN npm install
 # Default command to run tests
 CMD ["npm", "test"]
 
+
